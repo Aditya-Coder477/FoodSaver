@@ -51,15 +51,6 @@ def main():
     # Custom CSS for better styling
     st.markdown("""
     <style>
-    /* Main background */
-    .stApp {
-        background-color: white;
-    }
-    
-    /* Sidebar background */
-    section[data-testid="stSidebar"] {
-        background-color: white;
-    }
     .main-header {
         font-size: 3rem;
         color: #4CAF50;
