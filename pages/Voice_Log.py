@@ -3,7 +3,18 @@ import speech_recognition as sr
 import audio_recorder_streamlit as ars
 from utils.cashback import cashback_system
 
-
+# Simple cashback function replacement
+def simple_cashback_system(amount, transaction_type="donation"):
+    """Simplified cashback system without external dependencies"""
+    rates = {
+        "donation": 0.05,  # 5% cashback for donations
+        "purchase": 0.02,  # 2% cashback for purchases
+        "waste_reduction": 0.03  # 3% for waste reduction
+    }
+    
+    rate = rates.get(transaction_type, 0.01)
+    cashback = amount * rate
+    return cashback
 # Check if user is logged in
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.title("🔒 Authentication Required")
