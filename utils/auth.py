@@ -1,67 +1,83 @@
 import streamlit as st
-import firebase_admin
-from firebase_admin import credentials, auth
-import json
+import hashlib
+import time
 
-def init_firebase_auth():
-    """Initialize Firebase Authentication"""
-    if not firebase_admin._apps:
-        # For prototype, use a service account or anonymous auth
-        try:
-            cred = credentials.Certificate("firebase-service-account.json")
-            firebase_admin.initialize_app(cred)
-        except:
-            # Fallback to demo mode
-            st.warning("Running in demo mode - no Firebase connection")
-
-def authenticate_user():
-    """Simple authentication for prototype"""
-    if 'authenticated' not in st.session_state:
-        st.session_state.authenticated = False
-        st.session_state.user_email = "demo@foodsaver.com"
-        st.session_state.user_id = "demo_user_123"
-        st.session_state.cashback_balance = 0
+def authenticate_user(username, password):
+    """
+    Simple authentication without external dependencies
+    """
+    # Simple user database (in production, use proper database)
+    users = {
+        "admin": {
+            "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",  # "password"
+            "role": "admin",
+            "name": "Administrator"
+        },
+        "manager": {
+            "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",  # "password"
+            "role": "manager", 
+            "name": "Restaurant Manager"
+        },
+        "staff": {
+            "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",  # "password"
+            "role": "staff",
+            "name": "Staff Member"
+        }
+    }
     
-    if not st.session_state.authenticated:
-        show_login_screen()
-        return False
-    return True
-
-def show_login_screen():
-    """Display login/signup screen"""
-    st.markdown('<div class="main-header">🍽️ FoodSaver</div>', unsafe_allow_html=True)
+    # Hash the input password
+    password_hash = hashlib.sha256(password.encode()).hexdigest()
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("Login")
-        email = st.text_input("Email", key="login_email")
-        password = st.text_input("Password", type="password", key="login_password")
-        
-        if st.button("Login", key="login_btn"):
-            # Simple demo authentication
-            if email and password:
-                st.session_state.authenticated = True
-                st.session_state.user_email = email
-                st.session_state.user_id = f"user_{hash(email)}"
-                st.session_state.cashback_balance = 50  # Starting bonus
-                st.success("Login successful! 🎉")
-                st.rerun()
-            else:
-                st.error("Please enter email and password")
-    
-    with col2:
-        st.subheader("Sign Up")
-        new_email = st.text_input("Email", key="signup_email")
-        new_password = st.text_input("Password", type="password", key="signup_password")
-        confirm_password = st.text_input("Confirm Password", type="password", key="confirm_password")
-        
-
+    # Check credentials
+    if username in users and users[username]["password"] == password_hash:
+        return {
+            "success": True,
+            "user": {
+                "username": username,
+                "name": users[username]["name"],
+                "role": users[username]["role"],
+                "login_time": time.time()
+            }
+        }
+    else:
+        return {"success": False, "error": "Invalid credentials"}
 
 def logout():
-    """Logout user"""
-    st.session_state.authenticated = False
-    st.session_state.user_email = None
-    st.session_state.user_id = None
-    st.session_state.cashback_balance = 0
-    st.rerun()
+    """
+    Logout user by clearing session state
+    """
+    if 'user' in st.session_state:
+        del st.session_state.user
+    if 'logged_in' in st.session_state:
+        st.session_state.logged_in = False
+
+def require_login():
+    """
+    Check if user is logged in, redirect to login if not
+    """
+    if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+        st.error("🔒 Please log in to access this page")
+        st.info("Use the main app page to log in")
+        st.stop()
+
+def get_current_user():
+    """
+    Get current logged in user info
+    """
+    if 'user' in st.session_state:
+        return st.session_state.user
+    return None
+
+def has_permission(required_role):
+    """
+    Check if current user has required role permissions
+    """
+    user = get_current_user()
+    if not user:
+        return False
+    
+    role_hierarchy = {"admin": 3, "manager": 2, "staff": 1}
+    user_level = role_hierarchy.get(user.get("role", "staff"), 0)
+    required_level = role_hierarchy.get(required_role, 0)
+    
+    return user_level >= required_level
