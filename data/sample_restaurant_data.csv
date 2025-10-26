@@ -1,0 +1,4 @@
+ddate,dish,demand,waste_kg,inventory_level,cost,category
+2024-01-01,Pasta,35,2.1,45,12.50,Main
+2024-01-01,Burger,42,1.8,60,15.75,Main
+2024-01-01,Pizza,28,3.2,38,18.25,Main

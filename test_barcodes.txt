@@ -1,0 +1,18 @@
+# GUARANTEED WORKING BARCODES FOR DEMO
+
+## Global Products:
+91 - 76130346292Maggi Noodles (Nestle)
+5449000000996 - Coca-Cola 330ml
+5010477345672 - Cadbury Dairy Milk
+3017620422003 - Nutella Spread
+
+## Indian Products:
+8901000101020 - Amul Butter
+8901493003016 - Aashirvaad Atta (ITC)
+8901060901125 - Britannia Cake
+8901010101011 - Tata Salt
+8901030317904 - Dabur Honey
+
+## Health Products:
+0081244100154 - Ensure Nutrition
+0038000139933 - Pediasure Growth
