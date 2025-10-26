@@ -3,7 +3,7 @@ streamlit-authenticator==0.2.1
 firebase-admin==6.2.0
 torch>=2.1.0
 torchvision>=0.16.0
-speechrecognition==3.10.0
+speechrecognition>=3.10.0
 pydub==0.25.1
 pyzbar==0.1.9
 streamlit-option-menu==0.3.2
