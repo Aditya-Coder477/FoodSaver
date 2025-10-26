@@ -1,7 +1,6 @@
 import streamlit as st
 import speech_recognition as sr
 import audio_recorder_streamlit as ars
-from utils.cashback import cashback_system
 
 # Simple cashback function replacement
 def simple_cashback_system(amount, transaction_type="donation"):
